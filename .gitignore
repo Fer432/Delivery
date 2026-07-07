@@ -6,3 +6,8 @@ bin/
 obj/
 *.suo
 *.user
+*node_modules/
+.env/
+agent.md
+*.code-workspace
+
