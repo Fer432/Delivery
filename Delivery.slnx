@@ -1,9 +1,0 @@
-<Solution>
-  <Folder Name="/Elementos de la solución/">
-    <File Path=".gitignore" />
-  </Folder>
-  <Project Path="DeliveryApp.Application/DeliveryApp.Application.csproj" />
-  <Project Path="DeliveryApp.Domain/DeliveryApp.Domain.csproj" />
-  <Project Path="DeliveryApp.Infrastructure/DeliveryApp.Infrastructure.csproj" />
-  <Project Path="DeliveryApp.Presentation/DeliveryApp.Presentation.csproj" />
-</Solution>

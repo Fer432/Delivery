@@ -1,8 +1,0 @@
-## Ignore Visual Studio temporary files, caches, and settings
-.vs/
-[Dd]ebug/
-[Rr]elease/
-bin/
-obj/
-*.suo
-*.user
