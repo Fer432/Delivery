@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import styles from "./page.module.css";
 import gsap from "gsap";
@@ -107,6 +107,22 @@ export default function Home() {
   const navRef = useRef<HTMLElement>(null);
   const heroRef = useRef<HTMLElement>(null);
   const phoneRef = useRef<HTMLDivElement>(null);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [showLoginModal, setShowLoginModal] = useState(false);
+  const [loginEmail, setLoginEmail] = useState("");
+  const [loginPassword, setLoginPassword] = useState("");
+
+  const handleLogin = (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoggedIn(true);
+    setShowLoginModal(false);
+    setLoginEmail("");
+    setLoginPassword("");
+  };
+
+  const handleLogout = () => {
+    setIsLoggedIn(false);
+  };
 
   useEffect(() => {
     /* --- Navbar scroll effect --- */
@@ -283,6 +299,50 @@ export default function Home() {
 
   return (
     <>
+      {/* ===== LOGIN MODAL ===== */}
+      {showLoginModal && (
+        <div className={styles.modalOverlay} onClick={() => setShowLoginModal(false)}>
+          <div className={styles.loginModal} onClick={(e) => e.stopPropagation()}>
+            <button className={styles.modalClose} onClick={() => setShowLoginModal(false)}>✕</button>
+            <div className={styles.loginModalHeader}>
+              <span className={styles.loginModalIcon}>🚀</span>
+              <h2 className={styles.loginModalTitle}>Iniciar Sesión</h2>
+              <p className={styles.loginModalSubtitle}>Accede a tu cuenta de FlashBite</p>
+            </div>
+            <form onSubmit={handleLogin} className={styles.loginForm}>
+              <div className={styles.loginField}>
+                <label htmlFor="login-email">Correo electrónico</label>
+                <input
+                  id="login-email"
+                  type="email"
+                  placeholder="tu@correo.com"
+                  value={loginEmail}
+                  onChange={(e) => setLoginEmail(e.target.value)}
+                  required
+                />
+              </div>
+              <div className={styles.loginField}>
+                <label htmlFor="login-password">Contraseña</label>
+                <input
+                  id="login-password"
+                  type="password"
+                  placeholder="••••••••"
+                  value={loginPassword}
+                  onChange={(e) => setLoginPassword(e.target.value)}
+                  required
+                />
+              </div>
+              <button type="submit" className={styles.loginSubmitBtn}>
+                Iniciar Sesión
+              </button>
+              <p className={styles.loginFooterText}>
+                ¿No tienes cuenta? <a href="#">Regístrate gratis</a>
+              </p>
+            </form>
+          </div>
+        </div>
+      )}
+
       {/* ===== NAVBAR ===== */}
       <nav ref={navRef} className={styles.navbar} id="navbar">
         <a href="#" className={styles.logo}>
@@ -295,7 +355,99 @@ export default function Home() {
           <a href="#productos" className={styles.navLink}>Menú</a>
           <a href="#promociones" className={styles.navLink}>Promociones</a>
           <a href="#nosotros" className={styles.navLink}>Nosotros</a>
-          <a href="#descargar" className={styles.navCta}>Descargar App</a>
+
+          {/* Profile Dropdown */}
+          <div className={styles.profileDropdownWrapper} id="profile-dropdown">
+            <button className={styles.profileBtn}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                <circle cx="12" cy="7" r="4" />
+              </svg>
+              Mi Perfil
+              <svg className={styles.profileChevron} width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="6 9 12 15 18 9" />
+              </svg>
+            </button>
+
+            <div className={styles.profileDropdown}>
+              {!isLoggedIn ? (
+                <>
+                  <a href="#" className={styles.profileDropdownItem} onClick={(e) => { e.preventDefault(); }}>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <circle cx="12" cy="12" r="10" />
+                      <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+                      <line x1="12" y1="17" x2="12.01" y2="17" />
+                    </svg>
+                    Ayuda
+                  </a>
+                  <a href="#" className={styles.profileDropdownItem} onClick={(e) => { e.preventDefault(); setShowLoginModal(true); }}>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
+                      <polyline points="10 17 15 12 10 7" />
+                      <line x1="15" y1="12" x2="3" y2="12" />
+                    </svg>
+                    Iniciar Sesión
+                  </a>
+                </>
+              ) : (
+                <>
+                  <a href="#" className={styles.profileDropdownItem}>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                      <polyline points="9 22 9 12 15 12 15 22" />
+                    </svg>
+                    Inicio
+                  </a>
+                  <a href="#" className={styles.profileDropdownItem}>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                      <circle cx="12" cy="10" r="3" />
+                    </svg>
+                    Mis Direcciones
+                  </a>
+                  <a href="#" className={styles.profileDropdownItem}>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+                    </svg>
+                    Mis Favoritos
+                  </a>
+                  <a href="#" className={styles.profileDropdownItem}>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <rect x="1" y="3" width="15" height="13" rx="2" ry="2" />
+                      <path d="M16 8h2a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2h-2" />
+                      <line x1="8" y1="21" x2="16" y2="21" />
+                      <line x1="12" y1="16" x2="12" y2="21" />
+                    </svg>
+                    Mis Pedidos
+                  </a>
+                  <a href="#" className={styles.profileDropdownItem}>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                      <circle cx="12" cy="7" r="4" />
+                    </svg>
+                    Mi Perfil
+                  </a>
+                  <div className={styles.profileDropdownDivider}></div>
+                  <a href="#" className={styles.profileDropdownItem}>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <circle cx="12" cy="12" r="10" />
+                      <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+                      <line x1="12" y1="17" x2="12.01" y2="17" />
+                    </svg>
+                    Ayuda
+                  </a>
+                  <a href="#" className={`${styles.profileDropdownItem} ${styles.profileDropdownLogout}`} onClick={(e) => { e.preventDefault(); handleLogout(); }}>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                      <polyline points="16 17 21 12 16 7" />
+                      <line x1="21" y1="12" x2="9" y2="12" />
+                    </svg>
+                    Cerrar Sesión
+                  </a>
+                </>
+              )}
+            </div>
+          </div>
         </div>
         <button className={styles.mobileMenuBtn} aria-label="Menú">
           <span></span>
